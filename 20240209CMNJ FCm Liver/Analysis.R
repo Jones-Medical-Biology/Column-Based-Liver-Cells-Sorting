@@ -6,8 +6,8 @@ library(ggcyto)
 # get_fcs_resultsQC(QC_folder = "resultsQC/", 
 #                   raw_folder = "Exp_20240209_1/") -> 
 #   cs
-
-fcsfiles <- dir("resultsQC",pattern = "*.fcs",full.names = TRUE) # list contents but only in directory with .fcs
+setwd("/Users/brianschildt/OneDrive - University of Florida/Notebook Hoffman Brian/Projects/Column Based Liver Cells Sorting/20240209CMNJ FCm Liver")
+fcsfiles <- dir("resultsQC", pattern = "*.fcs",full.names = TRUE) # list contents but only in directory with .fcs
 fcsfiles.FS <- read.flowSet(fcsfiles)
 flowPlot(fcsfiles.FS[[1]], plotParameters = c("FL8-A","SSC-A"))
 fcsfiles.FS.GS <- GatingSet(fcsfiles.FS)
@@ -62,13 +62,14 @@ fcsfiles.FS.GS[[1]] |> autoplot(bins = 128)
 
 # hello
 
+ggcyto(fcsfiles.FS.GS[[1]], aes('FL13-A','SSC-A'), subset = "kupffer") +
+  geom_hex(bins = 64) +
+  xlim(-1e4,100)
 
-ggcyto(fcsfiles.FS.GS[1],aes(`FL3-A`,`SSC-A`), subset = "CD45-") +
-  geom_hex(bins = 64)+
-  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
-  scale_y_log10()+
-  scale_fill_gradientn(colours = rainbow(7), trans = "sqrt")+
-  geom_gate("CD146-")
-  plot(fcsfiles.FS.GS)
+ggcyto(fcsfiles.FS.GS[[5]], aes(x = `FL19-A`, y = `SSC-A`), subset = "notB") -> p
+p + geom_hex(bins = 128) + scale_x_flowjo_biexp()
+
+
+plot(fcsfiles.FS.GS)
 
 
