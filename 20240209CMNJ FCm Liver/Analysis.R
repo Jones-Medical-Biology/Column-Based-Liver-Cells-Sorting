@@ -67,8 +67,7 @@ ggcyto(fcsfiles.FS.GS[[1]], aes('FL13-A','SSC-A'), subset = "kupffer") +
   xlim(-1e4,100)
 
 ggcyto(fcsfiles.FS.GS[[5]], aes(x = `FL19-A`, y = `SSC-A`), subset = "notB") -> p
-p + geom_hex(bins = 128) + scale_x_flowjo_biexp()
-
+p + geom_hex(bins = 64) + scale_x_flowjo_biexp()
 
 plot(fcsfiles.FS.GS)
 
