@@ -115,3 +115,4 @@ dev.off()
 #
 # 2. Plot everything again but this time change the subset to
 #    "scatter" (i.e.: subset = "scatter")
+# 3. Maybe I get credit on GitHub now
