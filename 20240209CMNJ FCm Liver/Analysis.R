@@ -13,10 +13,10 @@ flowPlot(fcsfiles.FS[[1]], plotParameters = c("FL8-A","SSC-A"))
 fcsfiles.FS.GS <- GatingSet(fcsfiles.FS)
 gs_get_pop_paths(fcsfiles.FS.GS)
 rg_scatter <- rectangleGate("FSC-A"=c(200,4e6), "SSC-A"=c(250, 5e6), filterId="scatter")
-gs_pop_add(fcsfiles.FS.GS, rg_scatter,parent = "root")
+gs_pop_add(fcsfiles.FS.GS, rg_scatter,parent = "root") #Good plot
 
 rg_WBC <- rectangleGate("FL8-A"=c(4e3,1e6), "SSC-A"=c(1e4, 5e6), filterId="CD45+")
-gs_pop_add(fcsfiles.FS.GS, rg_WBC, parent = "scatter")
+gs_pop_add(fcsfiles.FS.GS, rg_WBC, parent = "scatter") #Good plot
 
 rg_T <- rectangleGate("FL5-A"=c(8e3,1e6), "SSC-A"=c(1e4, 1e6), filterId="Tcells")
 gs_pop_add(fcsfiles.FS.GS, rg_T, parent = "CD45+")
@@ -51,7 +51,7 @@ gs_pop_add(fcsfiles.FS.GS, rg_OC, parent = "CD45-")
 rg_lsec <- rectangleGate("FL17-A"=c(0,5e4), "SSC-A"=c(1e2, 5e4), filterId="lsec")
 gs_pop_add(fcsfiles.FS.GS, rg_lsec, parent = "CD146+") #Noah will address later scales need to be fixed
 
-rg_clec <- rectangleGate("FL17-A"=c(0,5e4), "SSC-A"=c(1e2, 5e4), filterId="CLEC4M")
+rg_clec <- rectangleGate("FL17-A"=c(0,1e3), "SSC-A"=c(1e3, 1e6), filterId="CLEC4M")
 gs_pop_add(fcsfiles.FS.GS, rg_clec, parent = "CD146+")
 
 rg_clecm <- rectangleGate("FL17-A"=c(4e2,5e4), "SSC-A"=c(1e3, 1e6), filterId="CLEC4")
@@ -74,16 +74,112 @@ p + geom_hex(bins = 64) + scale_x_flowjo_biexp()
 
 plot(fcsfiles.FS.GS)
 
+gate_name <- "scatter"
+ggcyto(fcsfiles.FS.GS[1],aes(`FSC-A`,`SSC-A`), subset = "root") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "CD45+"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL8-A`,`SSC-A`), subset = "scatter") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "Tcells"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL5-A`,`SSC-A`), subset = "CD45+") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "Bcells"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL19-A`,`SSC-A`), subset = "CD45+") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "NKcells"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL13-A`,`SSC-A`), subset = "CD45+") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "notT"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL5-A`,`SSC-A`), subset = "CD45+") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "notB"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL19-A`,`SSC-A`), subset = "notT") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "kupffer"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL13-A`,`SSC-A`), subset = "notB") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "vsig4+"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL1-A`,`SSC-A`), subset = "kupffer") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "vsig4-"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL1-A`,`SSC-A`), subset = "kupffer") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "CD45-"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL8-A`,`SSC-A`), subset = "scatter") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "CD146-"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL3-A`,`SSC-A`), subset = "CD45-") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
 gate_name <- "CD146+"
 ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD45-") +
   geom_hex(bins = 64)+
   scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
   scale_y_log10()+
-  geom_gate(gate_name)
+  geom_gate(gate_name) -> p
 ggsave(paste(gate_name, sep = "", ".pdf"), p)
 
 gate_name <- "CLEC4"
-ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD45-") +
+ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD146+") +
   geom_hex(bins = 64)+
   scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
   scale_y_log10()+
