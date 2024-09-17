@@ -106,7 +106,12 @@ ggcyto(fcsfiles.FS.GS[1],aes(`FL3-A`,`SSC-A`), subset = "CD45-") +
   geom_gate(gate_name) -> p
 ggsave(paste(gate_name, sep = "", ".pdf"), p)
 
-pdf("fcsfiles.FS.GS.pdf")
+pdf("gating_tree.pdf")
 plot(fcsfiles.FS.GS)
 dev.off()
 
+# 1. Complete the above set of plots according to the gating hierarchy (see
+#    gating_tree.pdf) 
+#
+# 2. Plot everything again but this time change the subset to
+#    "scatter" (i.e.: subset = "scatter")
