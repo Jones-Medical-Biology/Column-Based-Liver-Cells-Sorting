@@ -54,7 +54,7 @@ gs_pop_add(fcsfiles.FS.GS, rg_lsec, parent = "CD146+") #Noah will address later 
 rg_clec <- rectangleGate("FL17-A"=c(0,5e4), "SSC-A"=c(1e2, 5e4), filterId="CLEC4M")
 gs_pop_add(fcsfiles.FS.GS, rg_clec, parent = "CD146+")
 
-rg_clecm <- rectangleGate("FL17-A"=c(0,5e4), "SSC-A"=c(1e2, 5e4), filterId="CLEC4")
+rg_clecm <- rectangleGate("FL17-A"=c(4e2,5e4), "SSC-A"=c(1e3, 1e6), filterId="CLEC4")
 gs_pop_add(fcsfiles.FS.GS, rg_clecm, parent = "CD45-")
 
 rg_HSC <- rectangleGate("FL3-A"=c(-1e3,1e3), "SSC-A"=c(1e3, 1e6), filterId="CD146-")
@@ -74,20 +74,39 @@ p + geom_hex(bins = 64) + scale_x_flowjo_biexp()
 
 plot(fcsfiles.FS.GS)
 
-ggcyto(fcsfiles.FS.GS[1],aes(`FL3-A`,`SSC-A`), subset = "CD45-") +
-  geom_hex(bins = 64)+
-  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
-  scale_y_log10()+
-  geom_gate("CD146+")
-
+gate_name <- "CD146+"
 ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD45-") +
   geom_hex(bins = 64)+
   scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
   scale_y_log10()+
-  geom_gate("CLEC4")
+  geom_gate(gate_name)
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
 
-ggsave("CD146+.pdf" , p)
+gate_name <- "CLEC4"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD45-") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "CLEC4M"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL17-A`,`SSC-A`), subset = "CD146+") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+gate_name <- "CD146-"
+ggcyto(fcsfiles.FS.GS[1],aes(`FL3-A`,`SSC-A`), subset = "CD45-") +
+  geom_hex(bins = 64)+
+  scale_x_flowjo_biexp(widthBasis = -1, maxValue = 1e7)+
+  scale_y_log10()+
+  geom_gate(gate_name) -> p
+ggsave(paste(gate_name, sep = "", ".pdf"), p)
+
+pdf("fcsfiles.FS.GS.pdf")
 plot(fcsfiles.FS.GS)
-
-
+dev.off()
 
